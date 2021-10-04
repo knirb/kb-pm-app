@@ -49,7 +49,7 @@ const RegisterScreen = (props: Props) => {
   };
 
   const handleSubmit = () => {
-    console.log({...});
+    console.log({ ...user });
 
     createUser({ variables: { ...user } });
   };
