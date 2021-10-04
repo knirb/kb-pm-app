@@ -16,9 +16,9 @@ export default function TabOneScreen({navigation}: RootTabScreenProps<"TabOne">)
 			<View style={styles.separator} lightColor="#eee" darkColor="rgba(255,255,255,0.1)" />
 			<TextInput style={styles.projectsHeader} editable={false} value={"Projects"} />
 			<View style={styles.projects}>
-				<Project />
-				<Project />
-				<Project />
+				<Project navigation={navigation} />
+				<Project navigation={navigation} />
+				<Project navigation={navigation} />
 			</View>
 			{/* <EditScreenInfo path="/screens/TabOneScreen.tsx" /> */}
 		</View>
