@@ -2,7 +2,6 @@ import React, { useState } from "react";
 import { TextInput, View, Text, StyleSheet } from "react-native";
 import { Button } from "react-native-paper";
 import { gql, useMutation } from "@apollo/client";
-
 interface Props {}
 
 interface User {
@@ -20,7 +19,7 @@ const USER_MUTATION = gql`
     $password: String
   ) {
     createMember(
-      input: { firstName: $firstName, lastName: $lastName, email: $email, password: $password }
+      input: { firstName: $firstName, surname: $lastName, email: $email, password: $password }
     ) {
       id
     }
@@ -29,6 +28,7 @@ const USER_MUTATION = gql`
 
 const RegisterScreen = (props: Props) => {
   const [createUser, { data, error, loading }] = useMutation(USER_MUTATION);
+  console.log(process.env.API_KEY);
 
   const [user, setUser] = useState<User>({
     firstName: "",
@@ -38,8 +38,6 @@ const RegisterScreen = (props: Props) => {
   });
 
   const handleChange = (field: string, value: any) => {
-    console.log(value);
-
     setUser((prev) => {
       return {
         ...prev,
@@ -57,6 +55,8 @@ const RegisterScreen = (props: Props) => {
   return (
     <View style={styles.container}>
       <View style={styles.form}>
+        <Text>{JSON.stringify(data)}</Text>
+
         <Text style={styles.label}>First Name</Text>
         <TextInput
           style={styles.input}
@@ -80,12 +80,11 @@ const RegisterScreen = (props: Props) => {
 
         <TextInput
           style={styles.input}
-          textContentType="password"
           value={user.password}
           onChangeText={(text) => handleChange("password", text)}
         />
         <Button onPress={handleSubmit}>Register now!</Button>
-        <Text>{data}</Text>
+        <Text></Text>
       </View>
     </View>
   );
@@ -99,8 +98,8 @@ const styles = StyleSheet.create({
   },
   input: {
     borderRadius: 5,
-    marginVertical: 20,
-    height: 30,
+    marginVertical: 25,
+    height: 50,
     backgroundColor: "white",
     color: "black",
   },
