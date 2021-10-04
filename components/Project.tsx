@@ -1,14 +1,25 @@
+import {BottomTabNavigationProp} from "@react-navigation/bottom-tabs";
+import {CompositeNavigationProp} from "@react-navigation/core";
+import {NativeStackNavigationProp} from "@react-navigation/native-stack";
 import React from "react";
-import {StyleSheet, Text} from "react-native";
+import {StyleSheet, Text, TouchableOpacity} from "react-native";
+import {RootStackParamList, RootTabParamList} from "../types";
 import {View} from "./Themed";
 
-interface Props {}
+interface Props {
+	navigation: CompositeNavigationProp<
+		BottomTabNavigationProp<RootTabParamList, "TabOne">,
+		NativeStackNavigationProp<RootStackParamList>
+	>;
+}
 
-const Project = (props: Props) => {
+const Project = ({navigation}: Props) => {
 	return (
-		<View style={styles.container}>
-			<Text style={styles.container__title}>PROJECT TITLE</Text>
-		</View>
+		<TouchableOpacity onPress={() => navigation.navigate("TabTwo")}>
+			<View style={styles.container}>
+				<Text style={styles.container__title}>PROJECT TITLE</Text>
+			</View>
+		</TouchableOpacity>
 	);
 };
 
@@ -17,7 +28,7 @@ const styles = StyleSheet.create({
 		margin: 5,
 		height: 150,
 		borderRadius: 10,
-		backgroundColor: "red",
+		backgroundColor: "coral",
 		flexBasis: 130,
 	},
 	container__title: {
