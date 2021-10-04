@@ -2,29 +2,32 @@ import React from "react";
 import {StyleSheet, Text} from "react-native";
 import {View} from "./Themed";
 
-interface Props {}
+interface Props {
+	title: string;
+	description: string;
+}
 
-const Project = (props: Props) => {
+const Task = ({title}: Props) => {
 	return (
-		<View style={styles.container}>
-			<Text style={styles.container__title}>PROJECT TITLE</Text>
+		<View style={styles.task}>
+			<Text style={styles.task__title}>{title}</Text>
 		</View>
 	);
 };
 
 const styles = StyleSheet.create({
-	container: {
-		margin: 5,
-		height: 150,
+	task: {
+		height: 50,
+		marginVertical: 5,
 		borderRadius: 10,
 		backgroundColor: "coral",
-		flexBasis: 130,
+		color: "white",
 	},
-	container__title: {
+	task__title: {
 		margin: 15,
 		color: "white",
 		fontWeight: "bold",
 	},
 });
 
-export default Project;
+export default Task;

@@ -12,7 +12,9 @@ const TestComponent = () => {
 
 const styles = StyleSheet.create({
 	wrapper: {
-		backgroundColor: "red",
+		backgroundColor: "coral",
+		height: 300,
+		borderRadius: 10,
 	},
 });
 
