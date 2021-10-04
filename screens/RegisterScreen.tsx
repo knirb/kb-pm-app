@@ -1,7 +1,9 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { TextInput, View, Text, StyleSheet } from "react-native";
 import { Button } from "react-native-paper";
 import { gql, useMutation } from "@apollo/client";
+import { useUser } from "../components/UserProvider";
+
 interface Props {}
 
 interface User {
@@ -28,8 +30,7 @@ const USER_MUTATION = gql`
 
 const RegisterScreen = (props: Props) => {
   const [createUser, { data, error, loading }] = useMutation(USER_MUTATION);
-  console.log(process.env.API_KEY);
-
+  const User = useUser();
   const [user, setUser] = useState<User>({
     firstName: "",
     lastName: "",
@@ -46,10 +47,18 @@ const RegisterScreen = (props: Props) => {
     });
   };
 
+  useEffect(() => {
+    if (user && data) {
+      User.set({
+        firstName: user.firstName,
+        lastName: user.lastName,
+        email: user.email,
+        id: data.createMember.id,
+      });
+    }
+  }, [user, data]);
   const handleSubmit = () => {
-    console.log({ ...user });
-
-    createUser({ variables: { ...user } });
+    createUser({ variables: { ...user } }).then((user: any) => {});
   };
 
   return (
