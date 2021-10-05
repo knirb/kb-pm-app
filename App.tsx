@@ -13,6 +13,7 @@ const client = new ApolloClient({
   cache: new InMemoryCache(),
   headers: {
     Authorization: `Basic YWRtaW46cGFzc3dvcmQ=`,
+    Origin: `app`,
   },
 });
 
