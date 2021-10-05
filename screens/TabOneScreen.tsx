@@ -6,9 +6,40 @@ import { Text, View } from "../components/Themed";
 import { RootTabScreenProps } from "../types";
 import Project from "../components/Project";
 import { useUser } from "../components/UserProvider";
+import { IProject } from "../types/types";
+import { gql, useQuery } from "@apollo/client";
+
+const READ_PROJECTS = gql`
+  query {
+    readProjects {
+      id
+      title
+      description
+      tasks {
+        nodes {
+          title
+          description
+        }
+      }
+    }
+  }
+`;
 
 export default function TabOneScreen({ navigation }: RootTabScreenProps<"TabOne">) {
+  const { loading, error, data } = useQuery(READ_PROJECTS, {
+    context: {
+      headers: {
+        Origin: "http://localhost:19006",
+      },
+    },
+  });
   const User = useUser();
+
+  console.log("THE DATA", data);
+
+  if (loading) return <Text>Loading...</Text>;
+  if (error) return <Text>Error! ${error.message}</Text>;
+
   return (
     <View style={styles.container}>
       <View style={styles.header}>
@@ -18,11 +49,10 @@ export default function TabOneScreen({ navigation }: RootTabScreenProps<"TabOne"
       <View style={styles.separator} lightColor="#eee" darkColor="rgba(255,255,255,0.1)" />
       <TextInput style={styles.projectsHeader} editable={false} value={"Projects"} />
       <View style={styles.projects}>
-        <Project navigation={navigation} />
-        <Project navigation={navigation} />
-        <Project navigation={navigation} />
+        {data.readProjects.map((project: IProject) => (
+          <Project key={project.id} project={project} navigation={navigation} />
+        ))}
       </View>
-      {/* <EditScreenInfo path="/screens/TabOneScreen.tsx" /> */}
     </View>
   );
 }

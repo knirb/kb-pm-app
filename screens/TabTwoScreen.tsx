@@ -2,21 +2,28 @@ import * as React from "react";
 import {FlatList, ScrollView, StyleSheet} from "react-native";
 import {black} from "react-native-paper/lib/typescript/styles/colors";
 import Task from "../components/Task";
-
+import {gql, useQuery} from "@apollo/client";
 import EditScreenInfo from "../components/EditScreenInfo";
 import {Text, View} from "../components/Themed";
+import {IProject} from "../types/types";
 
-export default function TabTwoScreen() {
+const READ_PROJECT = gql`
+	query readProject($id: ID) {
+		readOneProject(filter: {id: {eq: $id}}) {
+			title
+		}
+	}
+`;
+
+export default function TabTwoScreen({route}: any) {
+	const project: IProject = route.params.project;
 	return (
 		<ScrollView style={styles.container}>
 			<View style={styles.banner}>
-				<Text style={styles.banner__title}>Project Name</Text>
+				<Text style={styles.banner__title}>{project.title}</Text>
 				<View style={styles.banner__image}></View>
 			</View>
-			<Text style={styles.projectDescription}>
-				Lorem ipsum, dolor sit amet consectetur adipisicing elit. Veritatis incidunt facilis
-				velit beatae excepturi inventore aliquid placeat autem, cum possimus.
-			</Text>
+			<Text style={styles.projectDescription}>{project.description}</Text>
 			<FlatList
 				style={styles.tasks}
 				data={[
