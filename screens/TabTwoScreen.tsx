@@ -6,19 +6,39 @@ import {gql, useQuery} from "@apollo/client";
 import EditScreenInfo from "../components/EditScreenInfo";
 import {Text, View} from "../components/Themed";
 import {IProject} from "../types/types";
+import {SafeAreaView} from "react-native-safe-area-context";
 
 const READ_PROJECT = gql`
 	query readProject($id: ID) {
 		readOneProject(filter: {id: {eq: $id}}) {
 			title
+			title
+			tasks {
+				nodes {
+					title
+					description
+					assignedTo {
+						firstName
+						surname
+					}
+				}
+			}
 		}
 	}
 `;
 
 export default function TabTwoScreen({route}: any) {
 	const project: IProject = route.params.project;
+
+	const {loading, error, data} = useQuery(READ_PROJECT, {
+		variables: {id: project.id},
+	});
+
+	if (loading) return <Text>Loading...</Text>;
+	if (error) return <Text>Error! ${error.message}</Text>;
+
 	return (
-		<ScrollView style={styles.container}>
+		<View style={styles.container}>
 			<View style={styles.banner}>
 				<Text style={styles.banner__title}>{project.title}</Text>
 				<View style={styles.banner__image}></View>
@@ -26,23 +46,18 @@ export default function TabTwoScreen({route}: any) {
 			<Text style={styles.projectDescription}>{project.description}</Text>
 			<FlatList
 				style={styles.tasks}
-				data={[
-					{key: "Devin"},
-					{key: "Dan"},
-					{key: "Dominic"},
-					{key: "Jackson"},
-					{key: "James"},
-					{key: "Joel"},
-					{key: "John"},
-					{key: "Jillian"},
-					{key: "Jimmy"},
-					{key: "Julie"},
-				]}
-				renderItem={({item}) => (
-					<Task key={item.key} title={item.key} description={"todo"} />
+				data={data?.readOneProject?.tasks?.nodes ?? []}
+				keyExtractor={(task, index) => task.id}
+				renderItem={({item: task}) => (
+					<Task
+						key={task.id}
+						title={task.title}
+						description={task.description}
+						assignedTo={task.assignedTo}
+					/>
 				)}
 			/>
-		</ScrollView>
+		</View>
 	);
 }
 
