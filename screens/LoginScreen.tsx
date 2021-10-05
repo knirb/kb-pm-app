@@ -43,7 +43,6 @@ const LoginScreen = (props: Props) => {
   return (
     <View style={styles.container}>
       <View style={styles.form}>
-        <Text>{JSON.stringify(data)}</Text>
         <Text style={styles.label}>Email</Text>
         <TextInput style={styles.input} value={email} onChangeText={(text) => setEmail(text)} />
         <Text style={styles.label}>Password</Text>

@@ -64,8 +64,6 @@ const RegisterScreen = (props: Props) => {
   return (
     <View style={styles.container}>
       <View style={styles.form}>
-        <Text>{JSON.stringify(data)}</Text>
-
         <Text style={styles.label}>First Name</Text>
         <TextInput
           style={styles.input}
