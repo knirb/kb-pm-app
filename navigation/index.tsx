@@ -21,6 +21,7 @@ import { RootStackParamList, RootTabParamList, RootTabScreenProps } from "../typ
 import LinkingConfiguration from "./LinkingConfiguration";
 import LoginScreen from "../screens/LoginScreen";
 import { useUser } from "../components/UserProvider";
+import SettingsScreen from "../screens/SettingsScreen";
 
 export default function Navigation({ colorScheme }: { colorScheme: ColorSchemeName }) {
   return (
@@ -124,6 +125,14 @@ function BottomTabNavigator() {
           />
         </>
       )}
+      <BottomTab.Screen
+        name="Settings"
+        component={SettingsScreen}
+        options={{
+          title: "Settings",
+          tabBarIcon: ({ color }) => <TabBarIcon name="code" color={color} />,
+        }}
+      />
     </BottomTab.Navigator>
   );
 }

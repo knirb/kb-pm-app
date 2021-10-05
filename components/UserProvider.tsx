@@ -1,5 +1,5 @@
 import React, { Children, createContext, useContext, useEffect, useState } from "react";
-
+import { useQuery, gql } from "@apollo/client";
 interface Props {}
 
 interface User {
@@ -11,6 +11,7 @@ interface User {
 
 interface UserContext extends User {
   set: (user: User) => void;
+  logout: () => void;
 }
 
 const emptyUser = {
@@ -24,7 +25,12 @@ export const useUser = () => {
   return useContext(userContext);
 };
 
-const userContext = createContext<UserContext>({ ...emptyUser, set: () => {} });
+const USER_TASKS_QUERY = gql`
+  query TasksQuery($id: String) {
+    readTasks(filter: { assignedTo: { eq: $id } })
+  }
+`;
+const userContext = createContext<UserContext>({ ...emptyUser, set: () => {}, logout: () => {} });
 
 const UserProvider: React.FC<Props> = ({ children }) => {
   const [user, setUser] = useState<User>(emptyUser);
@@ -32,7 +38,17 @@ const UserProvider: React.FC<Props> = ({ children }) => {
     console.log("User changed!", user);
   }, [user]);
 
-  return <userContext.Provider value={{ ...user, set: setUser }}>{children}</userContext.Provider>;
+  const logout = () => {
+    setUser(emptyUser);
+  };
+
+  useEffect(() => {});
+
+  return (
+    <userContext.Provider value={{ ...user, set: setUser, logout }}>
+      {children}
+    </userContext.Provider>
+  );
 };
 
 export default UserProvider;
