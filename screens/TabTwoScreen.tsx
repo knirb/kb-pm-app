@@ -17,7 +17,6 @@ const READ_PROJECT = gql`
 
 export default function TabTwoScreen({route}: any) {
 	const project: IProject = route.params.project;
-	console.log("PROJECT!", project);
 	return (
 		<ScrollView style={styles.container}>
 			<View style={styles.banner}>
