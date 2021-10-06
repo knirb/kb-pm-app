@@ -1,4 +1,4 @@
-import React, {useEffect} from "react";
+import React from "react";
 import {StyleSheet, TextInput} from "react-native";
 import {Text, View} from "../components/Themed";
 import {RootTabScreenProps} from "../types";
@@ -6,6 +6,7 @@ import Project from "../components/Project";
 import {useUser} from "../components/UserProvider";
 import {IProject} from "../types/types";
 import {gql, useQuery} from "@apollo/client";
+import useApolloRefetchOnScreenChange from "../hooks/useApolloRefetchOnScreenChange";
 
 const READ_PROJECTS = gql`
 	query {
@@ -26,18 +27,7 @@ const READ_PROJECTS = gql`
 export default function TabOneScreen({navigation}: RootTabScreenProps<"TabOne">) {
 	const {loading, error, data, refetch} = useQuery(READ_PROJECTS);
 
-	useEffect(() => {
-		const unsubscribe = navigation.addListener("focus", () => {
-			// This check is to prevent error on component mount. The refetch function is defined only after the query is run once
-			// It also ensures that refetch runs only when you go back and not on component mount
-			if (refetch) {
-				// This will re-run the query
-				refetch();
-			}
-		});
-
-		return unsubscribe;
-	}, [navigation]);
+	useApolloRefetchOnScreenChange(navigation, refetch);
 
 	const User = useUser();
 

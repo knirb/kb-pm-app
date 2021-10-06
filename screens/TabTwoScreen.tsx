@@ -1,9 +1,10 @@
-import React, {useEffect} from "react";
+import React from "react";
 import {FlatList, StyleSheet} from "react-native";
 import Task from "../components/Task";
 import {gql, useQuery} from "@apollo/client";
 import {Text, View} from "../components/Themed";
 import {IProject} from "../types/types";
+import useApolloRefetchOnScreenChange from "../hooks/useApolloRefetchOnScreenChange";
 
 const READ_PROJECT = gql`
 	query readProject($id: ID) {
@@ -36,18 +37,7 @@ export default function TabTwoScreen({route, navigation}: any) {
 		variables: {id: project.id},
 	});
 
-	useEffect(() => {
-		const unsubscribe = navigation.addListener("focus", () => {
-			// This check is to prevent error on component mount. The refetch function is defined only after the query is run once
-			// It also ensures that refetch runs only when you go back and not on component mount
-			if (refetch) {
-				// This will re-run the query
-				refetch();
-			}
-		});
-
-		return unsubscribe;
-	}, [navigation]);
+	useApolloRefetchOnScreenChange(navigation, refetch);
 
 	if (loading) return <Text>Loading...</Text>;
 	if (error) return <Text>Error! ${error.message}</Text>;
