@@ -1,20 +1,17 @@
-import * as React from "react";
-import {FlatList, ScrollView, StyleSheet} from "react-native";
-import {black} from "react-native-paper/lib/typescript/styles/colors";
+import React, {useEffect} from "react";
+import {FlatList, StyleSheet} from "react-native";
 import Task from "../components/Task";
 import {gql, useQuery} from "@apollo/client";
-import EditScreenInfo from "../components/EditScreenInfo";
 import {Text, View} from "../components/Themed";
 import {IProject} from "../types/types";
-import {SafeAreaView} from "react-native-safe-area-context";
 
 const READ_PROJECT = gql`
 	query readProject($id: ID) {
 		readOneProject(filter: {id: {eq: $id}}) {
 			title
-			title
 			tasks {
 				nodes {
+					id
 					title
 					description
 					assignedTo {
@@ -27,12 +24,30 @@ const READ_PROJECT = gql`
 	}
 `;
 
-export default function TabTwoScreen({route}: any) {
-	const project: IProject = route.params.project;
+export default function TabTwoScreen({route, navigation}: any) {
+	const project: IProject = route?.params?.project ?? {
+		id: "",
+		title: "",
+		description: "",
+		tasks: [],
+	};
 
-	const {loading, error, data} = useQuery(READ_PROJECT, {
+	const {loading, error, data, refetch} = useQuery(READ_PROJECT, {
 		variables: {id: project.id},
 	});
+
+	useEffect(() => {
+		const unsubscribe = navigation.addListener("focus", () => {
+			// This check is to prevent error on component mount. The refetch function is defined only after the query is run once
+			// It also ensures that refetch runs only when you go back and not on component mount
+			if (refetch) {
+				// This will re-run the query
+				refetch();
+			}
+		});
+
+		return unsubscribe;
+	}, [navigation]);
 
 	if (loading) return <Text>Loading...</Text>;
 	if (error) return <Text>Error! ${error.message}</Text>;
@@ -47,10 +62,9 @@ export default function TabTwoScreen({route}: any) {
 			<FlatList
 				style={styles.tasks}
 				data={data?.readOneProject?.tasks?.nodes ?? []}
-				keyExtractor={(task, index) => task.id}
+				keyExtractor={task => task.id}
 				renderItem={({item: task}) => (
 					<Task
-						key={task.id}
 						title={task.title}
 						description={task.description}
 						assignedTo={task.assignedTo}
